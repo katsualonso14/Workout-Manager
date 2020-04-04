@@ -1,10 +1,4 @@
 
-//  ViewController.swift
-//  WorkOutApp
-//
-//  Created by 玉井　勝也 on 2020/02/27.
-//  Copyright © 2020 katsuya tamai. All rights reserved.
-//
 
 import UIKit
 import RealmSwift
