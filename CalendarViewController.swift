@@ -18,15 +18,6 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
     @IBOutlet weak var menuLabel: UILabel!
     
     
-    @IBAction func editButton(_ sender: Any) {
-        let storyboard: UIStoryboard = self.storyboard!
-           let first = storyboard.instantiateViewController(withIdentifier: "first")
-        
-           self.present(first, animated: true, completion: nil)
-    }
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -99,7 +90,6 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         //無い場合、「スケジュールはありません」と表示。
         menuLabel.text = "スケジュールはありません"
                menuLabel.textColor = .lightGray
-               view.addSubview(menuLabel)
                
         
         let formatter = DateFormatter()
@@ -107,24 +97,27 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         let da = formatter.string(from: date)
         dateLabel.text = da
                
-               //スケジュール取得
-               let realm = try! Realm()
-               var result = realm.objects(Event.self)
+//        スケジュール取得
+                       let realm = try! Realm()
+                       var result = realm.objects(Event.self)
+                result = result.filter("date = '\(da)'")
+        
 
-               result = result.filter("date = '\(da)'")
-               print(result)
-               for ev in result {
+        for ev in result {
                    if ev.date == da {
-                       menuLabel.text = ev.event
-                     touchEvent = ev
+                    menuLabel.text = ev.event
+                    touchEvent = ev
                 }
+        }
 
-    }
-    
 }
    
-    
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        calendar.reloadData()
+    }
+//    イベントマーク
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int{
                       let formatter = DateFormatter()
                       formatter.dateFormat = "yyyy/MM/dd"
@@ -142,7 +135,7 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
                 }
 //        print(date)
         return 0
-    } 
+    }
     
     
     private func startAndEndOfDay(_ date:Date) -> (start: Date , end: Date) {
@@ -151,15 +144,18 @@ class CalendarViewController: UIViewController,FSCalendarDataSource,FSCalendarDe
         return (start, end)
     }
     
+    //ラベルがタップされると変更できるように
     @IBAction func tapLabel(_ sender: Any) {
         let storyboard: UIStoryboard = self.storyboard!
-           let fourth = storyboard.instantiateViewController(withIdentifier: "fourth") as! FourthViewController
+           let fourth = storyboard.instantiateViewController(withIdentifier: "fourth") as! CorrectionsViewController
+        
+    
         
         fourth.event = touchEvent
         
            self.present(fourth, animated: true, completion: nil)
     }
     
-    
+  
     
 }
